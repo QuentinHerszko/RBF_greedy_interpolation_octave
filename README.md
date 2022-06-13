@@ -1,21 +1,15 @@
 # Interpolation en fonction de base radiale, méthode goutonne (en cours de réalisation)
 
------
-
 Version un peu plus avancée de l'interpolation en fonction de base radiale, elle utilise la méthode goutonne.
 __Principe__ : Sur chaque itération jusqu'à connvergence, on va chercher les points d'interpolation les moins bien approximés pour interpoler sur ces nouveaux points, tout en cherchant le paramètre de forme optimal de la fonction de base radiale afin d'obtenir la meilleur interpolation possible.
 
 ## Utilisation
-
------
 
 * Cliquer sur le bouton `Code` puis sur le bouton `Download ZIP` pour télécharger les codes
 * Déziper le fichier compressé
 * Éxécuter le fichier `Valid1D.m` sous Octave pour réaliser une interpolation
 
 ## Modifier les données de base
-
------
 
 ### Modifier la fonction à interpoler
 

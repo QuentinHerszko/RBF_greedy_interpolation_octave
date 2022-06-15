@@ -10,7 +10,7 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu)
   test = seuil + 1;
   k = 1;
   
-  while test > seuil && k <= 2
+  while test > seuil && k <= M
 
     % - Mise à jour de mu_tilde
     [mu_tilde(k),fmu_tilde(k),Imu_tilde(k),i] = ppi(mu,fmu,Imu);
@@ -28,7 +28,4 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu)
 
     k = k + 1;
   endwhile
-
-  figure(2)
-  plot(mu,Imu)
 endfunction

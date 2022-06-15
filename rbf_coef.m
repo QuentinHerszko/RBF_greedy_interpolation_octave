@@ -4,27 +4,31 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu)
   sig = zeros(1,M);
   mu_tilde = zeros(M,d);
   fmu_tilde = zeros(M,1);
-  [fmu_tilde(1),i] = max(fmu);
-  mu_tilde(1) = mu(i);
+  Imu = zeros(M,1);
+  Imu_tilde = zeros(M,1);
   seuil = 1e-2;
   test = seuil + 1;
   k = 1;
   
-  while test > seuil && k <= 3
-    % - Recherche sig_opt et màj de gamma
-    k
-    mu_tilde
+  while test > seuil && k <= 2
+
+    % - Mise à jour de mu_tilde
+    [mu_tilde(k),fmu_tilde(k),Imu_tilde(k),i] = ppi(mu,fmu,Imu);
+
+    % - Mise à jour de gamma que sur le point d'interpolation en question
+    gamma(k) = fmu_tilde(k) - Imu_tilde(k);
+
+    % - Mise à jour de sigma en fonction des résultats précédents
     [mup,fmup] = recherche_mup(mu,fmu,i);
-    [sig(k),gamma(k)] = recherche_sig_opt(sig,mu_tilde,fmu_tilde,mup,fmup,k);
+    sig(k) = recherche_sig_opt(sig,gamma,mu_tilde,fmu_tilde,mup,fmup,k);
 
     % - Test
     Imu = rbf_val(gamma,sig,mu_tilde,mu,k);
-    [test,b] = max(abs(Imu - fmu))
+    test = max(abs(fmu-Imu));
 
-    % - Prochain P.I
-    if test > seuil && k != 3
-      [mu_tilde(k+1),fmu_tilde(k+1),i] = ppi(gamma,sig,mu_tilde,mu,fmu,k);
-    endif
     k = k + 1;
   endwhile
+
+  figure(2)
+  plot(mu,Imu)
 endfunction

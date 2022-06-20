@@ -1,6 +1,6 @@
 function [mup,fmup] = recherche_mup(mu,fmu,i)
   [N,d] = size(mu);
-  
+
   if i == 1
     fmup = [fmu(2,:) fmu(3,:)]';
     mup = [mu(2,:) mu(3,:)]';

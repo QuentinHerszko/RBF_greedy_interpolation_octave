@@ -9,7 +9,7 @@ function [mup,fmup] = recherche_mup(mu,fmu,i)
     mup = [mu(1,:) mu(3,:) mu(4,:)]';
   elseif i == N-1
     fmup = [fmu(N-3,:) fmu(N-2,:) fmu(N,:)]';
-    mup = [mu(N-3,:) mu(N-2,:) mu(N,:)]'';
+    mup = [mu(N-3,:) mu(N-2,:) mu(N,:)]';
   elseif i == N
     fmup = [fmu(N-2,:) fmu(N-1,:)]';
     mup = [mu(N-2,:) mu(N-1,:)]';

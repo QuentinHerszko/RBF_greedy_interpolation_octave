@@ -20,8 +20,8 @@ fmu = f(mu);
 
 % --- Greedy RBF interpolation
 
-[gamma,sig,mu_tilde,k] = rbf_coef(mu,fmu);
-yin = rbf_val(gamma,sig,mu_tilde,xx,k-1);
+[gamma,sig] = rbf_coef(mu,fmu);
+yin = rbf_val(gamma,sig,mu,xx,mu_n);
 
 % --- Valeur exacte
 yex = f(xx);

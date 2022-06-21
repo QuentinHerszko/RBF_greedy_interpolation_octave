@@ -19,16 +19,21 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu)
   gamma(k) = fmu(i) - Imu(i);
 
   % - Mise à jour de sigma en fonction des résultats précédents
-  [mup,fmup] = recherche_mup(mu,fmu,i);
+  [mup,fmup] = recherche_mup_bis(mu,fmu,i);
+  mu_tilde
   if k ~= 1
-    fmup = unique([fmup ; fmu_tilde(1:k-1)]);
-    mup = unique([mup ; mu_tilde(1:k-1)])
+    fmup = unique([fmup; fmu_tilde(1:k-1)]);
+    mup = unique([mup; mu_tilde(1:k-1)])
   endif
   sig(k) = recherche_sig_opt(sig,gamma,mu_tilde,fmu_tilde,mup,fmup,k);
 
   % - test
   Imu = rbf_val(gamma,sig,mu_tilde,mu,k);
   test = max(abs(fmu-Imu));
+  figure(2)
+  hold on
+  grid on
+  plot(mu,fmu-Imu)
 
   k = k + 1;
 

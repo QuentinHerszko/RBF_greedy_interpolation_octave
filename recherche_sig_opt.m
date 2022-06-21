@@ -1,4 +1,4 @@
-function [sig_opt,gamma_opt] = recherche_sig_opt(sig,gamma,mu_tilde,fmu_tilde,mup,fmup,k)
+function [sig_opt] = recherche_sig_opt(sig,gamma,mu_tilde,fmu_tilde,mup,fmup,k)
   var_sig = 0.1 : 0.1 : 20;
   err = zeros(1,length(var_sig));
 

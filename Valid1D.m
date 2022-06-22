@@ -19,8 +19,8 @@ f = @(x) exp(x .* cos(3*pi.*x)) ;
 fmu = f(mu);
 
 % --- Greedy RBF interpolation
-
-[gamma,sig,mu_tilde,k] = rbf_coef(mu,fmu);
+yex = f(xx);
+[gamma,sig,mu_tilde,k] = rbf_coef(mu,fmu,xx,yex);
 yin = rbf_val(gamma,sig,mu_tilde,xx,k-1);
 
 % --- Valeur exacte

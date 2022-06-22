@@ -7,7 +7,7 @@ close all
 % --- Set interval
 mu_max = 1;
 mu_min = 0;
-mu_n = 30;
+mu_n = 10;
 mu = [linspace(mu_min, mu_max, mu_n)]';
 xx = [linspace(mu_min, mu_max, mu_n*200)]';
 
@@ -20,7 +20,8 @@ fmu = f(mu);
 
 % --- Greedy RBF interpolation
 
-[gamma,sig,mu_tilde,k] = rbf_coef(mu,fmu);
+yex = f(xx);
+[gamma,sig,mu_tilde,k] = rbf_coef(mu,fmu,xx,yex);
 yin = rbf_val(gamma,sig,mu_tilde,xx,k-1);
 
 % --- Valeur exacte

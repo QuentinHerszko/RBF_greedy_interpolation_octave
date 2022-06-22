@@ -8,7 +8,7 @@ function [gamma] = recherche_poid(mu,fmu,sig,k)
     endfor
   endfor
   F = zeros(size(M,1),1);
-  F(1:k) = fmu(k);
+  F(1:k) = fmu(1:k);
   
   gamma = M\F;
   

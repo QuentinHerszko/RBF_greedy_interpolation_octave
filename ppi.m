@@ -1,6 +1,4 @@
-function [next_mu_tilde,next_fmu_tilde,next_Imu_tilde,i] = ppi(mu,fmu,Imu)
-  [m,i] = max(abs(fmu - Imu));
+function [next_mu_tilde,i] = ppi(f,mu)
+  [m,i] = max(abs(f));
   next_mu_tilde = mu(i);
-  next_fmu_tilde = fmu(i);
-  next_Imu_tilde = Imu(i);
 endfunction

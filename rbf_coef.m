@@ -9,23 +9,33 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu)
   seuil = 1e-2;
   test = seuil + 1;
   k = 1;
+  li = zeros(1,M);
   
   while test > seuil && k <= M
 
-    % - Mise à jour de mu_tilde
-    [mu_tilde(k),fmu_tilde(k),Imu_tilde(k),i] = ppi(mu,fmu,Imu);
+    f = fmu - Imu;
 
-    % - Mise à jour de gamma que sur le point d'interpolation en question
-    gamma(k) = fmu_tilde(k) - Imu_tilde(k);
+    % - Recherche mu_tilde
+    [mu_tilde(k), i] = ppi(f,mu)
+    li(k) = i;
+  
+    % - Recherche de sigma
+    %%% voisins (+ mu_tildes précédents)
+    [mup,fmup] = recherche_mup(mu,f,i);
+    %if k ~= 1
+    %  mup = unique([mup; mu_tilde(1:k-1)]);
+    %  fmup = unique([fmup; f(li(1:k-1))]);
+    %endif
 
-    % - Mise à jour de sigma en fonction des résultats précédents
-    [mup,fmup] = recherche_mup(mu,fmu,i);
-    sig(k) = recherche_sig_opt(sig,gamma,mu_tilde,fmu_tilde,mup,fmup,k);
+    %%% paramètre de forme et calcul des coefficients
+    gamma(k) = f(i);
+    sig(k) = recherche_sig_opt_bis(gamma,mu_tilde,mup,fmup,f,li,k);
 
-    % - Test
+    % - test
     Imu = rbf_val(gamma,sig,mu_tilde,mu,k);
     test = max(abs(fmu-Imu));
-
     k = k + 1;
+    
   endwhile
+
 endfunction

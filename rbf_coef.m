@@ -1,4 +1,4 @@
-function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu)
+function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
   [M,d] = size(mu);
   gamma = zeros(M,1);
   sig = zeros(1,M);
@@ -13,7 +13,16 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu)
   
   while test > seuil && k <= M
 
+    figure(k)
+    hold on
+    grid on
+
+    plot(x,y-I,'r','linewidth',2)
+   
+
     f = fmu - Imu;
+
+     plot(mu,f,'k*','linewidth',2)
 
     % - Recherche mu_tilde
     [mu_tilde(k), i] = ppi(f,mu)
@@ -34,6 +43,14 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu)
     % - test
     Imu = rbf_val(gamma,sig,mu_tilde,mu,k);
     test = max(abs(fmu-Imu));
+
+    % - plot
+
+    I = rbf_val(gamma,sig,mu_tilde,x,k);
+    Ip = rbf_val(gamma(k),sig(k),mu_tilde(k),x,1)
+
+    plot(x,Ip,'b--','linewidth',2)
+
     k = k + 1;
     
   endwhile

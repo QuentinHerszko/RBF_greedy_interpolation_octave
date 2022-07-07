@@ -13,6 +13,6 @@ function [phi] = SpecialKernel(varargin)
   endif
 
   % --- Evaluate
-  phi_aux = @(r,sig,mu) exp(-1 ./ (2 .* sig.^2 * (r-mu).^2 .* (r+mu).^2));
+  phi_aux = @(r,sig,mu) my_func(r,sig,mu);
   phi = @(r) phi_aux(r,sig,mu);
 endfunction

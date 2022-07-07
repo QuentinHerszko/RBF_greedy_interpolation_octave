@@ -1,50 +1,71 @@
-function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
+function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
+  % informations de base
   [M,d] = size(mu);
-  gamma = zeros(M,1);
-  sig = zeros(1,M);
-  mu_tilde = zeros(M,d);
-  mi_tildep = zeros(M,d);
-  fmu_tilde = zeros(M,1);
   Imu = zeros(M,1);
-  Imu_tilde = zeros(M,1);
-  seuil = 1e-2;
-  test = seuil + 1;
-  k = 1;
+  g = fmu - Imu;
   
-  while test > seuil && k <= 2
+  % information à retenir
+  mu_tilde = zeros(M,1);
+  sig = zeros(1,M);
+  gamma = zeros(M,1);
+  
+  mu_int = zeros(M,1);
 
-  figure(k)
-  hold on
-  grid on
-  plot(x,y-I)
-  plot(mu,fmu-Imu,'*k')
-
-  % - Recherche mu_tilde
-  [mu_tilde(k), fmu_tilde(k), Imu_tilde(k), i] = ppi(mu,fmu,Imu);
-
-  % - Calcul de gamma
-  gamma(k) = fmu(i) - Imu(i);
-
-  % - Mise à jour de sigma en fonction des résultats précédents
-  [mup,fmup] = recherche_mup_bis(mu,fmu,i);
-  [m,p] = min(abs(mu_tilde(1:k) - mu(i)));
-  mu_tildep(k) = mu_tilde(p);
-  %if k ~= 1
-  %  fmup = unique([fmup; fmu_tilde(1:k-1)]);
-  %  mup = unique([mup; mu_tilde(1:k-1)])
-  %endif
-  sig(k) = recherche_sig_opt(sig,gamma,mu_tilde,fmu_tilde,mup,fmup,k);
-
-  % - test
-  Imu = rbf_val(gamma,sig,mu_tilde,mu,k);
-  test = max(abs(fmu-Imu));
-
-  % - plot
-  I = rbf_val(gamma,sig,mu_tilde,x,k);
-  Ip = rbf_val(gamma(k),sig(k),mu_tilde(k),x,1);
-  plot(x,Ip)
-
-  k = k + 1;
-
-  endwhile
+  for k = 1 : 1 : M
+    
+    % - point d'interpolation à traiter :
+    [m1,i] = max(g);
+    
+    % - enregistrement de la donnée :
+    mu_tilde(k) = mu(i);
+    mu_tilde
+    
+    % - point d'interpolation qui définissent l'intervalle
+    if k == 1
+      [m2,p] = min([abs(mu(i) - mu(1)), abs(mu(i) - mu(M))]);
+      if p == 1
+        mu_int(k) = mu(1);
+      else
+        mu_int(k) = mu(M);
+      endif
+    else
+      [m2,p] = min(abs(mu(i) - mu_tilde(1:k-1)));
+      mu_int(k) = mu_tilde(p);
+    endif
+    
+    % - voisins du pt actuel :
+    [mup,fmup] = recherche_mup(mu,g,i);
+    
+    % - recherche du paramètre de forme le plus adapté
+    var_sig = 0.1 : 0.1 : 2000;
+    err = zeros(1,length(var_sig));
+    
+    for j = 1 : 1 : length(var_sig)
+      
+      phi = SpecialKernel(var_sig(j),m2);
+      
+      if phi(0) ~= 0
+        gamma = g(i) / phi(0);
+        Imup = gamma * phi(mup - mu(i));
+        err(j) = sqrt( sum(fmup - Imup).^2 / length(fmup));
+      else
+        err(j) = 1e8;
+      endif
+      
+    endfor
+    
+    [m3,q] = min(err);
+    % enregistrement de la donnée
+    sig(k) = var_sig(q);
+    
+    % - calcul du coeff gamma
+    phi = SpecialKernel(sig(k),m2);
+    gamma(k) = g(i) / phi(0);
+    
+    % - mise à jour de g
+    Imu = gamma(k) * phi(mu - mu(i));
+    g = g - Imu;
+    
+  endfor
+    
 endfunction

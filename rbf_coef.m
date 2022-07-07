@@ -11,7 +11,7 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
   
   mu_int = zeros(M,1);
 
-  for k = 1 : 1 : M
+  for k = 1 : 1 : 6
     
     % - point d'interpolation à traiter :
     [m1,i] = max(g);
@@ -34,19 +34,23 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
     endif
     
     % - voisins du pt actuel :
-    [mup,fmup] = recherche_mup(mu,g,i);
+    [mup,fmup] = recherche_mup(mu,fmu,i);
     
     % - recherche du paramètre de forme le plus adapté
     var_sig = 0.1 : 0.1 : 2000;
     err = zeros(1,length(var_sig));
     
+    Imu(i)
+    
     for j = 1 : 1 : length(var_sig)
+      
+      sig(k) = var_sig(j);
       
       phi = SpecialKernel(var_sig(j),m2);
       
       if phi(0) ~= 0
-        gamma = g(i) / phi(0);
-        Imup = gamma * phi(mup - mu(i));
+        gamma(k) = (fmu(i) - Imu(i)) / phi(0);
+        Imup = rbf_val(gamma,sig,mu_tilde,mu_int,mup,k);
         err(j) = sqrt( sum(fmup - Imup).^2 / length(fmup));
       else
         err(j) = 1e8;
@@ -60,11 +64,12 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
     
     % - calcul du coeff gamma
     phi = SpecialKernel(sig(k),m2);
-    gamma(k) = g(i) / phi(0);
+    gamma(k) = (fmu(i) - Imu(i)) / phi(0);
     
     % - mise à jour de g
-    Imu = gamma(k) * phi(mu - mu(i));
-    g = g - Imu;
+    Imu = rbf_val(gamma,sig,mu_tilde,mu_int,mu,k)
+    g = fmu - Imu;
+    fmu(i) - Imu(i)
     
   endfor
     

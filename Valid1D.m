@@ -22,7 +22,7 @@ fmu = f(mu);
 
 yex = f(xx);
 [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu);
-yin = rbf_val(gamma,sig,mu_tilde,mu_int,xx,mu_n);
+yin = rbf_val(gamma,sig,mu_tilde,mu_int,xx,6);
 
 % --- Valeur exacte
 yex = f(xx);

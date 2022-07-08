@@ -67,9 +67,8 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
     gamma(k) = (fmu(i) - Imu(i)) / phi(0);
     
     % - mise à jour de g
-    Imu = rbf_val(gamma,sig,mu_tilde,mu_int,mu,k)
+    Imu = rbf_val(gamma,sig,mu_tilde,mu_int,mu,k);
     g = fmu - Imu;
-    fmu(i) - Imu(i)
     
   endfor
     

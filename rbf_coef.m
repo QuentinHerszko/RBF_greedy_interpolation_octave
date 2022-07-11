@@ -1,4 +1,4 @@
-function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
+function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
   % informations de base
   [M,d] = size(mu);
   Imu = zeros(M,1);
@@ -12,6 +12,12 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
   mu_int = zeros(M,1);
 
   for k = 1 : 1 : 6
+
+  figure(k)
+  hold on
+  grid on
+  plot(x,y-I)
+  plot(mu,g,'*k')
     
     % - point d'interpolation à traiter :
     [m1,i] = max(g);
@@ -69,6 +75,11 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
     % - mise à jour de g
     Imu = rbf_val(gamma,sig,mu_tilde,mu_int,mu,k);
     g = fmu - Imu;
+
+    % - plot
+    I = rbf_val(gamma,sig,mu_tilde,mu_int,x,k);
+    Ip = rbf_val(gamma(k),sig(k),mu_tilde(k),mu_int(k),x,1);
+    plot(x,Ip)
     
   endfor
     

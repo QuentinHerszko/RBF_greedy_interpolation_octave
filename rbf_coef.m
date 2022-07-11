@@ -1,4 +1,4 @@
-function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
+function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
   % informations de base
   [M,d] = size(mu);
   Imu = zeros(M,1);
@@ -12,6 +12,12 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
   mu_int = zeros(M,1);
 
   for k = 1 : 1 : 6
+
+  figure(k)
+  hold on
+  grid on
+  plot(x,y-I)
+  plot(mu,g,'*k')
     
     % - point d'interpolation à traiter :
     [m1,i] = max(g);
@@ -37,10 +43,11 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
     [mup,fmup] = recherche_mup(mu,fmu,i);
     
     % - recherche du paramètre de forme le plus adapté
-    var_sig = 0.1 : 0.1 : 2000;
+    var_sig = 0.01 : 0.01 : m2;
     err = zeros(1,length(var_sig));
     
-    Imu(i)
+    % - calcul du coeff gamma
+    gamma(k) = fmu(i) - Imu(i);
     
     for j = 1 : 1 : length(var_sig)
       
@@ -48,13 +55,8 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
       
       phi = SpecialKernel(var_sig(j),m2);
       
-      if phi(0) ~= 0
-        gamma(k) = (fmu(i) - Imu(i)) / phi(0);
-        Imup = rbf_val(gamma,sig,mu_tilde,mu_int,mup,k);
-        err(j) = sqrt( sum(fmup - Imup).^2 / length(fmup));
-      else
-        err(j) = 1e8;
-      endif
+      Imup = rbf_val(gamma,sig,mu_tilde,mup,k);
+      err(j) = sqrt( sum(fmup - Imup).^2 / length(fmup));
       
     endfor
     
@@ -62,14 +64,15 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu)
     % enregistrement de la donnée
     sig(k) = var_sig(q);
     
-    % - calcul du coeff gamma
-    phi = SpecialKernel(sig(k),m2);
-    gamma(k) = (fmu(i) - Imu(i)) / phi(0);
-    
     % - mise à jour de g
-    Imu = rbf_val(gamma,sig,mu_tilde,mu_int,mu,k);
+    Imu = rbf_val(gamma,sig,mu_tilde,mu,k);
     g = fmu - Imu;
     
+    % - plot
+    I = rbf_val(gamma,sig,mu_tilde,x,k);
+    Ip = rbf_val(gamma(k),sig(k),mu_tilde(k),x,1);
+    plot(x,Ip)
+
   endfor
     
 endfunction

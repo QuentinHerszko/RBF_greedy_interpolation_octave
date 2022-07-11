@@ -6,13 +6,7 @@ function [phi] = SpecialKernel(varargin)
     sig = varargin{1};
   endif
 
-  if length(varargin) <= 1
-    mu = 1;
-  else
-    mu = varargin{2};
-  endif
-
   % --- Evaluate
-  phi_aux = @(r,sig,mu) my_func(r,sig,mu);
-  phi = @(r) phi_aux(r,sig,mu);
+  phi_aux = @(r,sig) my_func(r,sig);
+  phi = @(r) phi_aux(r,sig);
 endfunction

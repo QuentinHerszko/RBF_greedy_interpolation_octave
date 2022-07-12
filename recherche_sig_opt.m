@@ -7,7 +7,7 @@ function [sig_opt] = recherche_sig_opt(sig,gamma,mu_tilde,fmu_tilde,mup,fmup,k)
     % - construction de l'interpolation
     Imup = rbf_val(gamma,sig,mu_tilde(1:k),mup,k);
     % - calcul de l'erreur
-    err(i) = min(abs(fmup - Imup));
+    err(i) = sqrt( sum(fmup - Imup).^2 / length(fmup));;
   endfor
   
   [e,h] = min(err)

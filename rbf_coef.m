@@ -12,7 +12,7 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
   test = seuil + 1;
   k = 1;
   
-  while test > seuil && k <= M
+  while test > seuil && k <= 2
 
   figure(k+1)
   hold on
@@ -36,8 +36,14 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
   %endif
   sig(k) = recherche_sig_opt(sig,gamma,mu_tilde,fmu_tilde,mup,fmup,k);
 
+  %if k ~= 1
+  %  phi = RadialKernel('gauss',sig(k));
+  %  gamma(1:k-1) = fmu_tilde(1:k-1) - gamma(k) * phi( sqrt( sum( (mu_tilde(k) - mu_tilde(1:k-1)).^2,2 ) ) )
+  %endif
+
   % - test
   Imu = rbf_val(gamma,sig,mu_tilde,mu,k);
+  %fmu - Imu
   test = max(abs(fmu-Imu));
 
   % - plot

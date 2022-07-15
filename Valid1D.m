@@ -7,7 +7,7 @@ close all
 % --- Set interval
 mu_max = 1;
 mu_min = 0;
-mu_n = 10;
+mu_n = 30;
 mu = [linspace(mu_min, mu_max, mu_n)]';
 xx = [linspace(mu_min, mu_max, mu_n*200)]';
 

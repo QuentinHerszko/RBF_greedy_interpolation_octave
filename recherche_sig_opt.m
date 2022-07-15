@@ -1,5 +1,5 @@
 function [sig_opt,gamma_opt] = recherche_sig_opt(sig,mu_tilde,fmu_tilde,mup,fmup,k)
-  var_sig = 0.1 : 0.1 : 10;
+  var_sig = 0.1 : 0.1 : 20;
   err = zeros(1,length(var_sig));
 
   for i = 1 : 1 : length(var_sig)

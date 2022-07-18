@@ -11,8 +11,11 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
   seuil = 1e-2;
   test = seuil + 1;
   k = 1;
+
+  % - erreur d'approximation
+  err_approx = zeros(1,M);
   
-  while test > seuil && k <= 2
+  while test > seuil && k <= M
 
   figure(k+1)
   hold on
@@ -43,7 +46,7 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
 
   % - test
   Imu = rbf_val(gamma,sig,mu_tilde,mu,k);
-  %fmu - Imu
+  fmu - Imu
   test = max(abs(fmu-Imu));
 
   % - plot
@@ -54,7 +57,18 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
   set(l,"fontsize",15)
   set(gca,"fontsize",15)
 
+  yin = rbf_val(gamma, sig, mu_tilde, x, k-1);
+  err_approx(k) = sqrt( sum( (yin - y).^2 )/length(x) );
+
   k = k + 1;
 
   endwhile
+
+  figure(10)
+  grid on
+  plot(1:k-1,err_approx(1:k-1),'*b','linewidth',2)
+  xlabel("Nombre de points d'interpolation traité")
+  ylabel("Erreur d'approximation")
+  set(gca,'fontsize',15)
+
 endfunction

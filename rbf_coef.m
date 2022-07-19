@@ -11,13 +11,16 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
   
   mu_int = zeros(M,1);
 
+  % - erreur d'approximation
+  err_approx = zeros(1,M);
+
   for k = 1 : 1 : 6
 
-  figure(k)
+  figure(k+1)
   hold on
   grid on
-  plot(x,y-I)
-  plot(mu,g,'*k')
+  plot(x,y-I,'-r','linewidth',2)
+  plot(mu,g,'*k','linewidth',2)
     
     % - point d'interpolation à traiter :
     [m1,i] = max(g);
@@ -77,10 +80,25 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
     g = fmu - Imu;
 
     % - plot
-    I = rbf_val(gamma,sig,mu_tilde,mu_int,x,k);
+    I = rbf_val(gamma,sig,mu_tilde,mu_int,x,k);       % - continuer ici
     Ip = rbf_val(gamma(k),sig(k),mu_tilde(k),mu_int(k),x,1);
-    plot(x,Ip)
+    plot(x,Ip,'--b','linewidth',2)
+    l = legend("f - I","I.P","I_k");
+    set(l,"fontsize",15)
+    set(gca,"fontsize",15)
     
+    err_approx(k) = sqrt( sum( (I - y).^2 )/length(x) );
+
   endfor
+
+  err_approx
     
+  figure(10)
+  grid on
+  plot(1:k,err_approx(1:k),'*b','linewidth',2)
+  xlabel("Nombre de points d'interpolation traité")
+  ylabel("Erreur d'approximation")
+  set(gca,'fontsize',15)
+
+
 endfunction

@@ -16,6 +16,9 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
   test =  seuil + 1;
   k = 1;
 
+  % - erreur d'approximation
+  err_approx = zeros(1,M);
+
   while test > seuil && k <= M
 
   figure(k+1)
@@ -25,7 +28,7 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
   plot(mu,g,'*k','linewidth',2)
     
     % - point d'interpolation à traiter :
-    [m1,i] = max(g);
+    [m1,i] = max(abs(g));
     
     % - enregistrement de la donnée :
     mu_tilde(k) = mu(i);
@@ -49,25 +52,22 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
     endif
 
     % - voisins du pt actuel :
-    [mup,fmup] = recherche_mup(mu,fmu,i);
+    [mup,fmup,Imup] = recherche_mup(mu,fmu,Imu,i);
 
-    % - recherche du paramètre de forme
-    var_sig = 0.001 : 0.001 : m2;
-    err = zeros(1,length(var_sig));
-
-    for j = 1 : 1 : length(var_sig)
-      sig(k) = var_sig(j);
-      % - construction de l'interpolation
-      Imup = rbf_val(gamma,sig,mu_tilde(1:k),mup,k);
-      % - calcul de l'erreur
-      err(j) = sqrt( sum(fmup - Imup).^2 / length(fmup));
-    endfor
-    
-    err(1:10)
-
-    if err == 0
+    if fmup(1) - Imup(1) == 0 || fmup(end) - Imup(end) == 0
       sig(k) = m2;
-    else 
+    else
+      var_sig = 0.001 : 0.001 : m2;
+      err = zeros(1,length(var_sig));
+
+      for j = 1 : 1 : length(var_sig)
+        sig(k) = var_sig(j);
+        % - construction de l'interpolation
+        Imup = rbf_val(gamma,sig,mu_tilde(1:k),mup,k);
+        % - calcul de l'erreur
+        err(j) = sqrt( sum(fmup - Imup).^2 / length(fmup));
+      endfor
+
       [m3,q] = min(err);
       % enregistrement de la donnée
       sig(k) = var_sig(q);
@@ -86,8 +86,17 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
     set(l,"fontsize",15)
     set(gca,"fontsize",15)
 
+    err_approx(k) = sqrt( sum( (I - y).^2 ) / length(x) );
+
     k += 1;
 
   endwhile
+
+  figure(15)
+  grid on
+  plot(1:k-1,err_approx(1:k-1),'*b','linewidth',2)
+  xlabel("Nombre de points d'interpolation traité")
+  ylabel("Erreur d'approximation")
+  set(gca,'fontsize',15)
     
 endfunction

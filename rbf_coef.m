@@ -69,7 +69,7 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
     set(gca,"fontsize",15)
 
     yin = rbf_val(gamma, sig, mu_tilde, x, k-1);
-    err_approx(k) = sqrt( sum( (yin - y).^2 )/length(x) );
+    err_approx(k) = sqrt( sum( (I - y).^2 )/length(x) );
 
     k = k + 1;
 

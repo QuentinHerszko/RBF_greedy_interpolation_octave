@@ -41,6 +41,7 @@ plot(xx, yex, '-r', 'linewidth', 2)
 plot(xx, yin, '--b', 'linewidth', 2)
 plot(xx, ep,  '--g', 'linewidth', 2)
 plot(mu, f(mu), '*k', 'markersize', 5, 'linewidth', 2)
+plot(mu_tilde(1:k-1),f(mu_tilde(1:k-1)),'*m','markersize',5,'linewidth',2)
 
 % - Legend
 l=legend('f exact', 'I_f interp', 'Polyfit', 'I.P', 'Location', 'northwest');

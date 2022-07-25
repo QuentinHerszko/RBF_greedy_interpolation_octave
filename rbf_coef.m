@@ -24,7 +24,7 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
   plot(mu,fmu-Imu,'*k','linewidth',2)
 
   % - Recherche mu_tilde
-  [mu_tilde(k), fmu_tilde(k), Imu_tilde(k), i] = ppi(mu,fmu,Imu);
+  [mu_tilde(k), fmu_tilde(k), i] = ppi(mu,fmu,Imu);
 
   % - Calcul de gamma
   gamma(k) = fmu(i) - Imu(i);
@@ -57,8 +57,7 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
   set(l,"fontsize",15)
   set(gca,"fontsize",15)
 
-  yin = rbf_val(gamma, sig, mu_tilde, x, k-1);
-  err_approx(k) = sqrt( sum( (yin - y).^2 )/length(x) );
+  err_approx(k) = sqrt( sum( (I - y).^2 )/length(x) );
 
   k = k + 1;
 
@@ -66,7 +65,7 @@ function [gamma, sig, mu_tilde,k] = rbf_coef(mu,fmu,x,y)
 
   figure(10)
   grid on
-  plot(1:k-1,err_approx(1:k-1),'*b','linewidth',2)
+  semilogy(1:k-1,err_approx(1:k-1),'*b','linewidth',2)
   xlabel("Nombre de points d'interpolation traité")
   ylabel("Erreur d'approximation")
   set(gca,'fontsize',15)

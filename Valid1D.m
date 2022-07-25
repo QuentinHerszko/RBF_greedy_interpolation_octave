@@ -41,9 +41,10 @@ plot(xx, yex, '-r', 'linewidth', 2)
 plot(xx, yin, '--b', 'linewidth', 2)
 plot(xx, ep,  '--g', 'linewidth', 2)
 plot(mu, f(mu), '*k', 'markersize', 5, 'linewidth', 2)
+plot(mu_tilde(1:6),f(mu_tilde(1:6)),'*m','markersize',5,'linewidth',2)
 
 % - Legend
-l=legend('f exact', 'I_f interp', 'Polyfit', 'I.P', 'Location', 'northwest');
+l=legend('f exact', 'I_f interp', 'Polyfit', 'I.P', 'Used I.P', 'Location', 'northwest');
 set(l, 'fontsize', 15);
 
 % - Overlay

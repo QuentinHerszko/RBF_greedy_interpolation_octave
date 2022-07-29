@@ -9,20 +9,21 @@ mu_max = 1;
 mu_min = 0;
 mu_n = 10;
 mu = [linspace(mu_min, mu_max, mu_n)]';
-xx = [linspace(mu_min, mu_max, mu_n*200)]';
+xx = [linspace(mu_min, mu_max, 200*mu_n)]';
 
 % --- Target function
 f = @(x) exp(x .* cos(3*pi.*x)) ;
 %f = @(x) (sin(2*pi.*x)).^4 ./ (x+1) ;
 %f = @(x) abs(x) ;
 %f = @(x) x .* sin(2*x + (pi/4)) + 1;
+%f = @(x) x .* sin(x);
 fmu = f(mu);
 
 % --- Greedy RBF interpolation
 
 yex = f(xx);
-[gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,xx,yex);
-yin = rbf_val(gamma,sig,mu_tilde,xx,6);
+[gamma, sig, mu_tilde, mu_int,k] = rbf_coef(mu,fmu,xx,yex);
+yin = rbf_val(gamma,sig,mu_tilde,xx,k-1);
 
 % --- Valeur exacte
 yex = f(xx);
@@ -41,9 +42,10 @@ plot(xx, yex, '-r', 'linewidth', 2)
 plot(xx, yin, '--b', 'linewidth', 2)
 plot(xx, ep,  '--g', 'linewidth', 2)
 plot(mu, f(mu), '*k', 'markersize', 5, 'linewidth', 2)
+plot(mu_tilde(1:k-1),f(mu_tilde(1:k-1)),'*m','markersize',5,'linewidth',2)
 
 % - Legend
-l=legend('f exact', 'I_f interp', 'Polyfit', 'I.P', 'Location', 'northwest');
+l=legend('f exact', 'I_f interp', 'Polyfit', 'I.P', 'Used I.P', 'Location', 'northwest');
 set(l, 'fontsize', 15);
 
 % - Overlay

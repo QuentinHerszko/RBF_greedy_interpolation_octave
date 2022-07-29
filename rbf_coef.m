@@ -1,4 +1,4 @@
-function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
+function [gamma, sig, mu_tilde, mu_int, k] = rbf_coef(mu,fmu,x,y)
   % informations de base
   [M,d] = size(mu);
   Imu = zeros(M,1);
@@ -65,12 +65,17 @@ function [gamma, sig, mu_tilde, mu_int] = rbf_coef(mu,fmu,x,y)
         % - construction de l'interpolation
         Imup = rbf_val(gamma,sig,mu_tilde(1:k),mup,k);
         % - calcul de l'erreur
-        err(j) = sqrt( sum(fmup - Imup).^2 / length(fmup));
+        err(j) = sqrt( sum((fmup - Imup).^2) / length(fmup));
       endfor
+      
+      if err(1) == err(2)
+        sig(k) = m2;
+      else
+        [m3,q] = min(err);
+        % enregistrement de la donnée
+        sig(k) = var_sig(q);
+      endif
 
-      [m3,q] = min(err);
-      % enregistrement de la donnée
-      sig(k) = var_sig(q);
     endif
     
     % - test
